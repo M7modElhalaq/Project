@@ -105,13 +105,15 @@
                             <!-- / header top left -->
                             <div class="aa-header-top-right">
                                 <ul class="aa-head-top-nav-right">
-                                    <li><a href="account.html">My Account</a></li>
                                     <li class="hidden-xs"><a href="wishlist.html">Wishlist</a></li>
-                                    <li class="hidden-xs"><a href="cart.html">My Cart</a></li>
-                                    <li class="hidden-xs"><a href="checkout.html">Checkout</a></li>
+                                    <li class="hidden-xs"><a href="{{route('cart')}}">My Cart</a></li>
+                                    <li class="hidden-xs"><a href="{{route('checkOut')}}">Checkout</a></li>
                                     @if (Route::has('login'))
                                         @auth
-                                            <li><a href="{{ url('/admin') }}">Dashboard</a></li>
+                                            <li><a href="account.html">My Account</a></li>
+                                            @if(Auth::user()->isAdmin())
+                                                <li><a href="{{ url('/admin') }}">Dashboard</a></li>
+                                            @endif
                                             <li>
                                                 <a href="{{ route('logout') }}">Logout</a>
                                             </li>
@@ -148,7 +150,7 @@
                             <!-- / logo  -->
                             <!-- cart box -->
                             <div class="aa-cartbox">
-                                <a class="aa-cart-link" href="#">
+                                <a class="aa-cart-link" href="{{route('cart')}}">
                                     <span class="fa fa-shopping-basket"></span>
                                     <span class="aa-cart-title">SHOPPING CART</span>
                                     <span class="aa-cart-notify">{{$count}}</span>
@@ -172,7 +174,7 @@
                                             </li>
                                         @endif
                                     </ul>
-                                    <a class="aa-cartbox-checkout aa-primary-btn" href="checkout.html">Checkout</a>
+                                    <a class="aa-cartbox-checkout aa-primary-btn" href="{{route('checkOut')}}">Checkout</a>
                                 </div>
                             </div>
                             <!-- / cart box -->
@@ -314,43 +316,6 @@
     </footer>
     <!-- / footer -->
 
-    <!-- Login Modal -->
-    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Login or Register</h4>
-                    <form class="aa-login-form"  method="POST" action="{{ route('login') }}">
-                        <label for="">Username or Email address<span>*</span></label>
-                        <input type="text" class="{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autofocus placeholder="Username or email">
-                        @if ($errors->has('email'))
-                            <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('email') }}</strong>
-                                        </span>
-                        @endif
-                        <label for="">Password<span>*</span></label>
-                        <input type="password" class="{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="Password" required>
-                        <button type="submit" class="btn btn-primary">
-                            {{ __('Login') }}
-                        </button>
-
-                        @if (Route::has('password.request'))
-                            <a class="btn btn-link" href="{{ route('password.request') }}">
-                                {{ __('Forgot Your Password?') }}
-                            </a>
-                        @endif
-                        <label for="rememberme" class="rememberme"><input type="checkbox" id="rememberme"> Remember me </label>
-                        <p class="aa-lost-password"><a href="#">Lost your password?</a></p>
-                        <div class="aa-register-now">
-                            Don't have an account?<a href="account.html">Register now!</a>
-                        </div>
-                    </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -419,7 +384,6 @@
         });
     </script>
     <script>
-
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -443,9 +407,7 @@
                     }
                 });
             });
-
         });
-
     </script>
 </body>
 </html>

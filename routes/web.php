@@ -13,15 +13,31 @@
 
 Route::get('/', 'FrontEndController@index')->name('FrontIndex');
 Route::get('/products/{id}/{category}', 'FrontEndController@products')->name('FrontProducts');
+Route::get('/products/{id}/{subCategory}', 'FrontEndController@subProducts')->name('FrontSubProducts');
 Route::post('/products/{id}/{category}/sortBy', 'FrontEndController@sortProductsBy')->name('FrontSortProductsBy');
 Route::get('/productDetail/{id}', 'FrontEndController@productDetail')->name('FrontProductDetail');
 
+Route::get('checkOut', 'FrontEndController@checkOut')->name('checkOut');
+Route::get('cart', 'FrontEndController@cart')->name('cart');
 Route::post('addToCart', 'FrontEndController@addToCart')->name('addToCart');
 Route::post('removeItemFromCart', 'FrontEndController@removeItemFromCart')->name('removeItemFromCart');
 
-Auth::routes();
+// Authentication Routes...
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::middleware('auth')->group(function () {
+// Registration Routes...
+Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\RegisterController@register');
+
+// Password Reset Routes...
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::prefix('admin')->group(function () {
         Route::get('/', 'HomeController@index')->name('home');

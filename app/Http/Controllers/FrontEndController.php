@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Product;
+use App\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -37,6 +38,23 @@ class FrontEndController extends Controller
 
     public function products($id, $category) {
         $cat = Category::find($id);
+        $products = $cat->products()->paginate(20);
+        $count = count(session()->get('cart'));
+        $cartItems = session()->get('cart');
+        $categories = Category::take(10)->get();
+        return view('products')->with([
+            'category' => $cat,
+            'section' => $category,
+            'products' => $products,
+            'categories' => $categories,
+            'count' => $count,
+            'cartItems' => $cartItems,
+            'pageTitle' => $category
+        ]);
+    }
+
+    public function subProducts($id, $category) {
+        $cat = SubCategory::find($id);
         $products = $cat->products()->paginate(20);
         $count = count(session()->get('cart'));
         $cartItems = session()->get('cart');
@@ -139,7 +157,6 @@ class FrontEndController extends Controller
     }
 
     public function removeItemFromCart(Request $request) {
-//        dd($request);
         $input = $request->all();
         $id = $input['id'];
 
@@ -194,6 +211,32 @@ class FrontEndController extends Controller
             'count' => $count,
             'cartItems' => $cartItems,
             'pageTitle' => $product->name
+        ]);
+    }
+
+    public function cart() {
+        $count = count(session()->get('cart'));
+        $cartItems = session()->get('cart');
+        $categories = Category::take(10)->get();
+
+        return view('cart')->with([
+            'pageTitle' => 'Cart',
+            'categories' => $categories,
+            'count' => $count,
+            'cartItems' => $cartItems,
+        ]);
+    }
+
+    public function checkOut() {
+        $count = count(session()->get('cart'));
+        $cartItems = session()->get('cart');
+        $categories = Category::take(10)->get();
+
+        return view('checkOut')->with([
+            'pageTitle' => 'Check Out',
+            'categories' => $categories,
+            'count' => $count,
+            'cartItems' => $cartItems,
         ]);
     }
 }
